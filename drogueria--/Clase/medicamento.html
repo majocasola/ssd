@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drogueria Stock</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .btn {
+      width: 100%;
+    }
+    .table-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Sistema de Stock</h1>
+    </div>
+  </header>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">SPF</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="medicamento.html">Medicamentos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pedidos.html">Pedidos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="proveedores.html">Proveedores</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="unidades.html">Unidades</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="seccion1" class="section-header">
+      <div class="container">
+        <h2>Ingreso de Medicamentos</h2>
+        <form id="medicamentosForm">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" placeholder="Ingrese el nombre del medicamento">
+          </div>
+          <div class="form-group">
+            <label for="cantidad">Cantidad</label>
+            <input type="text" class="form-control" id="cantidad" placeholder="Ingrese la cantidad del medicamento">
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
+      </div>
+    </section>
+    
+    <section id="seccion2" class="section-header">
+      <div class="container table-container">
+        <h2>Buscar Medicamentos</h2>
+        <div id="buscarMedicamento" class="form-group">
+          <label for="buscar">Buscar Medicamento</label>
+          <input type="text" class="form-control" id="buscar" placeholder="Ingrese el nombre del medicamento a buscar">
+        </div>
+      </div>
+      <div class="container table-container">
+        <div class="table-responsive">
+          <table id="medicamentosTable" class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Medicamento</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertarán los medicamentos ingresados -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3">
+    <div class="container">
+      &copy; 2023 Mi Sitio Web. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+    {
+      const medicamentosForm = document.getElementById("medicamentosForm");
+      const medicamentosTable = document.getElementById("medicamentosTable");
+      const buscarInput = document.getElementById("buscar");
+
+      function eliminarMedicamento(button) {
+        const row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+      }
+
+      function editarMedicamento(button) {
+        const row = button.parentNode.parentNode;
+        const medicamentoCelda = row.cells[0];
+        const cantidadCelda = row.cells[1];
+
+        const nombre = prompt("Ingrese el nuevo nombre", medicamentoCelda.innerText);
+        const cantidad = prompt("Ingrese la nueva cantidad", cantidadCelda.innerText);
+
+        if (nombre !== null && cantidad !== null && nombre.trim() !== "" && !isNaN(cantidad) && parseInt(cantidad) > 0) {
+          medicamentoCelda.innerText = nombre;
+          cantidadCelda.innerText = cantidad;
+        }
+      }
+
+      medicamentosForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const nombreInput = document.getElementById("nombre");
+        const cantidadInput = document.getElementById("cantidad");
+
+        const nombre = nombreInput.value;
+        const cantidad = parseInt(cantidadInput.value);
+
+        if (nombre.trim() !== "" && !isNaN(cantidad) && cantidad > 0) {
+          let medicamentoExiste = false;
+          const filas = medicamentosTable.rows;
+
+          for (let i = 1; i < filas.length; i++) {
+            const fila = filas[i];
+            const medicamentoCelda = fila.cells[0];
+
+            if (medicamentoCelda.innerText === nombre) {
+              const cantidadCelda = fila.cells[1];
+              const cantidadExistente = parseInt(cantidadCelda.innerText);
+              cantidadCelda.innerText = cantidadExistente + cantidad;
+              medicamentoExiste = true;
+              break;
+            }
+          }
+
+          if (!medicamentoExiste) {
+            const fila = medicamentosTable.insertRow();
+            const celda1 = fila.insertCell();
+            const celda2 = fila.insertCell();
+            const celda3 = fila.insertCell();
+
+            celda1.innerHTML = nombre;
+            celda2.innerHTML = cantidad;
+
+            celda3.innerHTML = `
+              <button class="btn btn-sm btn-primary" data-action="editar">Editar</button>
+              <button class="btn btn-sm btn-danger" data-action="eliminar">Eliminar</button>
+            `;
+
+            const editarBoton = celda3.querySelector("[data-action=editar]");
+            editarBoton.addEventListener("click", function () {
+              editarMedicamento(editarBoton);
+            });
+
+            const eliminarBoton = celda3.querySelector("[data-action=eliminar]");
+            eliminarBoton.addEventListener("click", function () {
+              eliminarMedicamento(eliminarBoton);
+            });
+          }
+
+          nombreInput.value = "";
+          cantidadInput.value = "";
+        } else {
+          alert("Por favor, ingrese un nombre válido y una cantidad numérica mayor a cero.");
+        }
+      });
+
+      buscarInput.addEventListener("input", function (event) {
+        const buscarValor = event.target.value.toLowerCase();
+        const filas = medicamentosTable.rows;
+
+        for (let i = 1; i < filas.length; i++) {
+          const fila = filas[i];
+          const medicamentoCelda = fila.cells[0];
+          const medicamentoTexto = medicamentoCelda.innerText.toLowerCase();
+
+          if (medicamentoTexto.includes(buscarValor)) {
+            fila.style.display = "";
+          } else {
+            fila.style.display = "none";
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+

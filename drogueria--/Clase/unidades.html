@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drogueria Stock</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .btn {
+      width: 100%;
+    }
+    .table-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Sistema de Stock</h1>
+    </div>
+  </header>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">SPF</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="medicamento.html">Medicamentos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pedidos.html">Pedidos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="proveedores.html">Proveedores</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="unidades.html">Unidades</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="seccion4" class="section-header">
+      <div class="container">
+        <h2>Tabla de Unidades</h2>
+        <form id="unidadesForm">
+          <div class="form-group">
+            <label for="unidad">Unidad</label>
+            <input type="text" class="form-control" id="unidad" placeholder="Ingrese el nombre de la unidad">
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
+        <div id="buscarUnidad" class="form-group">
+          <label for="buscar">Buscar Unidad</label>
+          <input type="text" class="form-control" id="buscar" placeholder="Ingrese el nombre de la unidad a buscar">
+        </div>
+      </div>
+      <div class="container table-container">
+        <div class="table-responsive">
+          <table id="unidadesTable" class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Unidad</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertarán las unidades ingresadas -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3">
+    <div class="container">
+      &copy; 2023 Mi Sitio Web. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const unidadesForm = document.getElementById("unidadesForm");
+      const unidadesTable = document.getElementById("unidadesTable");
+      const buscarInput = document.getElementById("buscar");
+
+      unidadesForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const unidadInput = document.getElementById("unidad");
+
+        const unidad = unidadInput.value.trim();
+
+        if (unidad !== "") {
+          let unidadExists = false;
+          const rows = unidadesTable.rows;
+
+          for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const unidadCell = row.cells[0];
+
+            if (unidadCell.textContent === unidad) {
+              unidadExists = true;
+              break;
+            }
+          }
+
+          if (!unidadExists) {
+            const newRow = unidadesTable.insertRow();
+            const cell1 = newRow.insertCell();
+            const cell2 = newRow.insertCell();
+
+            cell1.textContent = unidad;
+            cell2.innerHTML = `
+              <button class="btn btn-sm btn-primary editar-btn">Editar</button>
+              <button class="btn btn-sm btn-danger eliminar-btn">Eliminar</button>
+            `;
+
+            const editarBtn = cell2.querySelector(".editar-btn");
+            const eliminarBtn = cell2.querySelector(".eliminar-btn");
+
+            editarBtn.addEventListener("click", () => editarUnidad(newRow));
+            eliminarBtn.addEventListener("click", () => eliminarUnidad(newRow));
+          } else {
+            alert("La unidad ya existe.");
+          }
+
+          unidadInput.value = "";
+        } else {
+          alert("Ingrese el nombre de la unidad.");
+        }
+      });
+
+      function eliminarUnidad(row) {
+        row.remove();
+      }
+
+      function editarUnidad(row) {
+        const unidadCell = row.cells[0];
+        const unidad = unidadCell.textContent;
+        const nuevoNombre = prompt("Ingrese el nuevo nombre de la unidad", unidad);
+
+        if (nuevoNombre !== null && nuevoNombre.trim() !== "") {
+          unidadCell.textContent = nuevoNombre;
+        }
+      }
+
+      buscarInput.addEventListener("input", (e) => {
+        const buscarValue = e.target.value.toLowerCase();
+        const rows = unidadesTable.rows;
+
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const unidadCell = row.cells[0];
+          const unidadText = unidadCell.textContent.toLowerCase();
+
+          if (unidadText.includes(buscarValue)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
