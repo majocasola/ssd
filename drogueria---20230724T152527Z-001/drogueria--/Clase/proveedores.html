@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drogueria Stock</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .btn {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Sistema de Stock</h1>
+    </div>
+  </header>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">SPF</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="medicamento.html">Medicamentos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pedidos.html">Pedidos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="proveedores.html">Proveedores</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="unidades.html">Unidades</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="seccion3" class="section-header">
+      <div class="container">
+        <h2>Tabla de Proveedores</h2>
+        <form id="proveedoresForm">
+          <div class="form-group">
+            <label for="proveedor">Proveedor</label>
+            <input type="text" class="form-control" id="proveedor" placeholder="Ingrese el nombre del proveedor">
+          </div>
+          <div class="form-group">
+            <label for="observaciones">Observaciones</label>
+            <input type="text" class="form-control" id="observaciones" placeholder="Ingrese observaciones">
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
+      </div>
+    </section>
+    
+    <section id="seccion4" class="section-header">
+      <div class="container">
+        <h2>Buscar Proveedores</h2>
+        <div id="buscarProveedor" class="form-group">
+          <label for="buscar">Buscar Proveedor</label>
+          <input type="text" class="form-control" id="buscar" placeholder="Ingrese el nombre del proveedor a buscar">
+        </div>
+      </div>
+      <div class="container">
+        <div class="table-responsive">
+          <table id="proveedoresTable" class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Proveedor</th>
+                <th>Observaciones</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertarán los proveedores ingresados -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3">
+    <div class="container">
+      &copy; 2023 Mi Sitio Web. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const proveedoresForm = document.getElementById("proveedoresForm");
+      const proveedoresTable = document.getElementById("proveedoresTable");
+      const buscarInput = document.getElementById("buscar");
+
+      proveedoresForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const proveedorInput = document.getElementById("proveedor");
+        const observacionesInput = document.getElementById("observaciones");
+
+        const proveedor = proveedorInput.value;
+        const observaciones = observacionesInput.value;
+
+        if (proveedor.trim() !== "" && observaciones.trim() !== "") {
+          let proveedorExists = false;
+          const rows = proveedoresTable.rows;
+
+          for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const proveedorCell = row.cells[0];
+
+            if (proveedorCell.innerText === proveedor) {
+              const observacionesCell = row.cells[1];
+              observacionesCell.innerText = observaciones;
+              proveedorExists = true;
+              break;
+            }
+          }
+
+          if (!proveedorExists) {
+            const newRow = proveedoresTable.insertRow();
+            const cell1 = newRow.insertCell();
+            const cell2 = newRow.insertCell();
+            const cell3 = newRow.insertCell();
+
+            cell1.innerHTML = proveedor;
+            cell2.innerHTML = observaciones;
+            cell3.innerHTML = `
+              <button class="btn btn-sm btn-primary editar-btn">Editar</button>
+              <button class="btn btn-sm btn-danger eliminar-btn">Eliminar</button>
+            `;
+
+            const editarBtn = cell3.querySelector(".editar-btn");
+            const eliminarBtn = cell3.querySelector(".eliminar-btn");
+
+            editarBtn.addEventListener("click", () => {
+              editarProveedor(newRow);
+            });
+
+            eliminarBtn.addEventListener("click", () => {
+              eliminarProveedor(newRow);
+            });
+          }
+
+          proveedorInput.value = "";
+          observacionesInput.value = "";
+        } else {
+          alert("Por favor, complete todos los campos.");
+        }
+      });
+
+      function eliminarProveedor(row) {
+        const rowIndex = row.rowIndex;
+        proveedoresTable.deleteRow(rowIndex);
+      }
+
+      function editarProveedor(row) {
+        const proveedorCell = row.cells[0];
+        const observacionesCell = row.cells[1];
+
+        const proveedor = prompt("Ingrese el nuevo nombre del proveedor", proveedorCell.innerText);
+        const observaciones = prompt("Ingrese nuevas observaciones", observacionesCell.innerText);
+
+        if (proveedor !== null && observaciones !== null && proveedor.trim() !== "" && observaciones.trim() !== "") {
+          proveedorCell.innerText = proveedor;
+          observacionesCell.innerText = observaciones;
+        }
+      }
+
+      buscarInput.addEventListener("input", (e) => {
+        const buscarValue = e.target.value.toLowerCase();
+        const rows = proveedoresTable.rows;
+
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const proveedorCell = row.cells[0];
+          const proveedorText = proveedorCell.innerText.toLowerCase();
+
+          if (proveedorText.includes(buscarValue)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

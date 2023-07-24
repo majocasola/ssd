@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drogueria Stock</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      flex: 1;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .btn {
+      width: 100%;
+    }
+    .table-container {
+      margin-top: 30px;
+    }
+    .table-container table {
+      margin-bottom: 0;
+    }
+    .agregar-medicamento-btn {
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+    .editar-btn,
+    .eliminar-btn {
+      padding: 4px 8px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Sistema de Stock</h1>
+    </div>
+  </header>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">SPF</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="medicamento.html">Medicamentos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pedidos.html">Pedidos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="proveedores.html">Proveedores</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="unidades.html">Unidades</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="seccion2" class="section-header">
+      <div class="container">
+        <h2>Tabla de Pedidos</h2>
+        <form id="pedidosForm">
+          <div class="form-group">
+            <label for="numeroPedido">Número de Pedido</label>
+            <input type="text" class="form-control" id="numeroPedido" placeholder="Ingrese el número de pedido">
+          </div>
+          <div class="form-group">
+            <label for="proveedor">Proveedor</label>
+            <input type="text" class="form-control" id="proveedor" placeholder="Ingrese el proveedor">
+          </div>
+          <div class="form-group">
+            <label for="fechaIngreso">Fecha de Ingreso</label>
+            <input type="date" class="form-control" id="fechaIngreso">
+          </div>
+          <div class="form-group">
+            <label for="itemDescripcion">Item Descripción</label>
+            <input type="text" class="form-control" id="itemDescripcion" placeholder="Ingrese la descripción del item">
+          </div>
+          <div class="form-group">
+            <label for="formaFarmacologica">Forma Farmacológica</label>
+            <input type="text" class="form-control" id="formaFarmacologica" placeholder="Ingrese la forma farmacológica">
+          </div>
+          <div class="form-group">
+            <label for="lote">Lote</label>
+            <input type="text" class="form-control" id="lote" placeholder="Ingrese el lote">
+          </div>
+          <div class="form-group">
+            <label for="vencimiento">Vencimiento</label>
+            <input type="date" class="form-control" id="vencimiento">
+          </div>
+          <div class="form-group">
+            <label for="tipoPedido">Tipo de Pedido</label>
+            <select class="form-control" id="tipoPedido">
+              <option value="mensual">Mensual</option>
+              <option value="bimestral">Bimestral</option>
+              <option value="rapido">Rápido</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="unidad">Unidad</label>
+            <input type="text" class="form-control" id="unidad" placeholder="Ingrese la unidad">
+          </div>
+          <div id="medicamentosContainer">
+            <div class="medicamento">
+              <div class="form-group">
+                <label for="medicamento">Medicamento</label>
+                <input type="text" class="form-control" name="medicamento" placeholder="Ingrese el medicamento">
+              </div>
+              <div class="form-group">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" class="form-control" name="cantidad" placeholder="Ingrese la cantidad">
+              </div>
+              <hr>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary agregar-medicamento-btn">Agregar Medicamento</button>
+          <button type="submit" class="btn btn-primary">Agregar Pedido</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="seccion3" class="section-header table-container">
+      <div class="container">
+        <div id="buscarPedido" class="form-group">
+          <label for="buscar">Buscar Pedido</label>
+          <input type="text" class="form-control" id="buscar" placeholder="Ingrese el número de pedido a buscar">
+        </div>
+        <div class="table-responsive">
+          <table id="pedidosTable" class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Número de Pedido</th>
+                <th>Proveedor</th>
+                <th>Fecha de Ingreso</th>
+                <th>Item Descripción</th>
+                <th>Forma Farmacológica</th>
+                <th>Lote</th>
+                <th>Vencimiento</th>
+                <th>Tipo de Pedido</th>
+                <th>Unidad</th>
+                <th>Medicamentos</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertarán los pedidos ingresados -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-dark text-white text-center py-3">
+    <div class="container">
+      &copy; 2023 Mi Sitio Web. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+    const pedidosForm = document.getElementById("pedidosForm");
+    const pedidosTable = document.getElementById("pedidosTable");
+    const buscarInput = document.getElementById("buscar");
+    const agregarMedicamentoBtn = document.querySelector(".agregar-medicamento-btn");
+    const medicamentosContainer = document.getElementById("medicamentosContainer");
+
+    agregarMedicamentoBtn.addEventListener("click", () => {
+      const medicamentoDivs = document.querySelectorAll(".medicamento");
+      const lastMedicamentoDiv = medicamentoDivs[medicamentoDivs.length - 1];
+
+      const newMedicamento = lastMedicamentoDiv.cloneNode(true);
+      const medicamentoInputs = newMedicamento.querySelectorAll("input");
+
+      medicamentoInputs.forEach((input) => (input.value = ""));
+
+      medicamentosContainer.appendChild(newMedicamento);
+    });
+
+    pedidosForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const numeroPedidoInput = document.getElementById("numeroPedido");
+      const proveedorInput = document.getElementById("proveedor");
+      const fechaIngresoInput = document.getElementById("fechaIngreso");
+      const itemDescripcionInput = document.getElementById("itemDescripcion");
+      const formaFarmacologicaInput = document.getElementById("formaFarmacologica");
+      const loteInput = document.getElementById("lote");
+      const vencimientoInput = document.getElementById("vencimiento");
+      const tipoPedidoInput = document.getElementById("tipoPedido");
+      const unidadInput = document.getElementById("unidad");
+      const medicamentosInputs = document.getElementsByName("medicamento");
+      const cantidadesInputs = document.getElementsByName("cantidad");
+
+      const numeroPedido = numeroPedidoInput.value;
+      const proveedor = proveedorInput.value;
+      const fechaIngreso = fechaIngresoInput.value;
+      const itemDescripcion = itemDescripcionInput.value;
+      const formaFarmacologica = formaFarmacologicaInput.value;
+      const lote = loteInput.value;
+      const vencimiento = vencimientoInput.value;
+      const tipoPedido = tipoPedidoInput.value;
+      const unidad = unidadInput.value;
+
+      const medicamentos = [];
+      const cantidades = [];
+
+      for (let i = 0; i < medicamentosInputs.length; i++) {
+        const medicamento = medicamentosInputs[i].value;
+        const cantidad = cantidadesInputs[i].value;
+
+        if (medicamento.trim() !== "" && cantidad.trim() !== "") {
+          medicamentos.push(medicamento);
+          cantidades.push(cantidad);
+        }
+      }
+
+      if (
+        numeroPedido.trim() !== "" &&
+        proveedor.trim() !== "" &&
+        fechaIngreso.trim() !== "" &&
+        itemDescripcion.trim() !== "" &&
+        formaFarmacologica.trim() !== "" &&
+        lote.trim() !== "" &&
+        vencimiento.trim() !== "" &&
+        tipoPedido.trim() !== "" &&
+        unidad.trim() !== "" &&
+        medicamentos.length > 0 &&
+        cantidades.length > 0
+      ) {
+        const pedido = {
+          numeroPedido,
+          proveedor,
+          fechaIngreso,
+          itemDescripcion,
+          formaFarmacologica,
+          lote,
+          vencimiento,
+          tipoPedido,
+          unidad,
+          medicamentos,
+          cantidades
+        };
+
+        pedidosData.push(pedido);
+
+        const newRow = pedidosTable.insertRow();
+        const cell1 = newRow.insertCell();
+        const cell2 = newRow.insertCell();
+        const cell3 = newRow.insertCell();
+        const cell4 = newRow.insertCell();
+        const cell5 = newRow.insertCell();
+        const cell6 = newRow.insertCell();
+        const cell7 = newRow.insertCell();
+        const cell8 = newRow.insertCell();
+        const cell9 = newRow.insertCell();
+        const cell10 = newRow.insertCell();
+        const cell11 = newRow.insertCell();
+
+        cell1.textContent = pedido.numeroPedido;
+        cell2.textContent = pedido.proveedor;
+        cell3.textContent = pedido.fechaIngreso;
+        cell4.textContent = pedido.itemDescripcion;
+        cell5.textContent = pedido.formaFarmacologica;
+        cell6.textContent = pedido.lote;
+        cell7.textContent = pedido.vencimiento;
+        cell8.textContent = pedido.tipoPedido;
+        cell9.textContent = pedido.unidad;
+        cell10.innerHTML = generateMedicamentosHTML(pedido.medicamentos, pedido.cantidades);
+        cell11.innerHTML = `
+          <button class="btn btn-sm btn-primary editar-btn">Editar</button>
+          <button class="btn btn-sm btn-danger eliminar-btn">Eliminar</button>
+        `;
+
+        const editarBtn = cell11.querySelector(".editar-btn");
+        const eliminarBtn = cell11.querySelector(".eliminar-btn");
+
+        editarBtn.addEventListener("click", () => editarPedido(pedido, newRow));
+        eliminarBtn.addEventListener("click", () => eliminarPedido(pedido, newRow));
+
+        numeroPedidoInput.value = "";
+        proveedorInput.value = "";
+        fechaIngresoInput.value = "";
+        itemDescripcionInput.value = "";
+        formaFarmacologicaInput.value = "";
+        loteInput.value = "";
+        vencimientoInput.value = "";
+        tipoPedidoInput.value = "mensual";
+        unidadInput.value = "";
+
+        clearMedicamentosInputs();
+      } else {
+        alert("Por favor, complete todos los campos del pedido y agregue al menos un medicamento con cantidad.");
+      }
+    });
+
+    function generateMedicamentosHTML(medicamentos, cantidades) {
+      let html = "";
+
+      for (let i = 0; i < medicamentos.length; i++) {
+        const medicamento = medicamentos[i];
+        const cantidad = cantidades[i];
+
+        html += `
+          <p><strong>Medicamento:</strong> ${medicamento}</p>
+          <p><strong>Cantidad:</strong> ${cantidad}</p>
+          <hr>
+        `;
+      }
+
+      return html;
+    }
+
+    function clearMedicamentosInputs() {
+      const medicamentoDivs = document.querySelectorAll(".medicamento");
+
+      for (let i = 1; i < medicamentoDivs.length; i++) {
+        medicamentoDivs[i].remove();
+      }
+
+      const medicamentosInputs = document.getElementsByName("medicamento");
+      const cantidadesInputs = document.getElementsByName("cantidad");
+
+      for (let i = 0; i < medicamentosInputs.length; i++) {
+        medicamentosInputs[i].value = "";
+        cantidadesInputs[i].value = "";
+      }
+    }
+
+    function eliminarPedido(pedido, row) {
+      const index = pedidosData.indexOf(pedido);
+      if (index !== -1) {
+        pedidosData.splice(index, 1);
+      }
+      row.remove();
+    }
+
+    function editarPedido(pedido, row) {
+      const numeroPedidoCell = row.cells[0];
+      const proveedorCell = row.cells[1];
+      const fechaIngresoCell = row.cells[2];
+      const itemDescripcionCell = row.cells[3];
+      const formaFarmacologicaCell = row.cells[4];
+      const loteCell = row.cells[5];
+      const vencimientoCell = row.cells[6];
+      const tipoPedidoCell = row.cells[7];
+      const unidadCell = row.cells[8];
+      const medicamentosCell = row.cells[9];
+
+      const medicamentosData = medicamentosCell.getElementsByTagName("p");
+      const medicamentos = [];
+      const cantidades = [];
+
+      for (let i = 0; i < medicamentosData.length; i += 2) {
+        const medicamento = medicamentosData[i].textContent.replace("Medicamento: ", "");
+        const cantidad = medicamentosData[i + 1].textContent.replace("Cantidad: ", "");
+
+        medicamentos.push(medicamento);
+        cantidades.push(cantidad);
+      }
+
+      const nuevoNumeroPedido = prompt("Ingrese el nuevo número de pedido", pedido.numeroPedido);
+      const nuevoProveedor = prompt("Ingrese el nuevo proveedor", pedido.proveedor);
+      const nuevaFechaIngreso = prompt("Ingrese la nueva fecha de ingreso", pedido.fechaIngreso);
+      const nuevaItemDescripcion = prompt("Ingrese la nueva descripción del item", pedido.itemDescripcion);
+      const nuevaFormaFarmacologica = prompt("Ingrese la nueva forma farmacológica", pedido.formaFarmacologica);
+      const nuevoLote = prompt("Ingrese el nuevo lote", pedido.lote);
+      const nuevoVencimiento = prompt("Ingrese el nuevo vencimiento", pedido.vencimiento);
+      const nuevoTipoPedido = prompt("Ingrese el nuevo tipo de pedido (mensual, bimestral, rápido)", pedido.tipoPedido);
+      const nuevaUnidad = prompt("Ingrese la nueva unidad", pedido.unidad);
+
+      if (
+        nuevoNumeroPedido !== null &&
+        nuevoProveedor !== null &&
+        nuevaFechaIngreso !== null &&
+        nuevaItemDescripcion !== null &&
+        nuevaFormaFarmacologica !== null &&
+        nuevoLote !== null &&
+        nuevoVencimiento !== null &&
+        nuevoTipoPedido !== null &&
+        nuevaUnidad !== null &&
+        nuevoNumeroPedido.trim() !== "" &&
+        nuevoProveedor.trim() !== "" &&
+        nuevaFechaIngreso.trim() !== "" &&
+        nuevaItemDescripcion.trim() !== "" &&
+        nuevaFormaFarmacologica.trim() !== "" &&
+        nuevoLote.trim() !== "" &&
+        nuevoVencimiento.trim() !== "" &&
+        nuevoTipoPedido.trim() !== "" &&
+        nuevaUnidad.trim() !== ""
+      ) {
+        pedido.numeroPedido = nuevoNumeroPedido;
+        pedido.proveedor = nuevoProveedor;
+        pedido.fechaIngreso = nuevaFechaIngreso;
+        pedido.itemDescripcion = nuevaItemDescripcion;
+        pedido.formaFarmacologica = nuevaFormaFarmacologica;
+        pedido.lote = nuevoLote;
+        pedido.vencimiento = nuevoVencimiento;
+        pedido.tipoPedido = nuevoTipoPedido;
+        pedido.unidad = nuevaUnidad;
+
+        numeroPedidoCell.textContent = nuevoNumeroPedido;
+        proveedorCell.textContent = nuevoProveedor;
+        fechaIngresoCell.textContent = nuevaFechaIngreso;
+        itemDescripcionCell.textContent = nuevaItemDescripcion;
+        formaFarmacologicaCell.textContent = nuevaFormaFarmacologica;
+        loteCell.textContent = nuevoLote;
+        vencimientoCell.textContent = nuevoVencimiento;
+        tipoPedidoCell.textContent = nuevoTipoPedido;
+        unidadCell.textContent = nuevaUnidad;
+
+        medicamentosCell.innerHTML = generateMedicamentosHTML(medicamentos, cantidades);
+      }
+    }
+
+    let pedidosData = [];
+
+    buscarInput.addEventListener("input", (e) => {
+      const buscarValue = e.target.value.toLowerCase();
+      const rows = pedidosTable.rows;
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const numeroPedidoCell = row.cells[0];
+        const numeroPedidoText = numeroPedidoCell.textContent.toLowerCase();
+
+        if (numeroPedidoText.includes(buscarValue)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+
